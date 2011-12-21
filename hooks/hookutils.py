@@ -37,27 +37,33 @@ def exec_statement(stat):
     os.remove(fnm)
     return txt
 
-def qt4_plugins_dir():
+def qt4_plugins_dir(pyside=False):
     import os
-    qt4_plugin_dirs = eval(exec_statement("from PyQt4.QtCore import QCoreApplication; app=QCoreApplication([]); print map(unicode,app.libraryPaths())"))
+    if pyside:
+        qt4_plugin_dirs = eval(exec_statement("from PySide.QtCore import QCoreApplication; app=QCoreApplication([]); print map(unicode,app.libraryPaths())"))
+    else:
+        qt4_plugin_dirs = eval(exec_statement("from PyQt4.QtCore import QCoreApplication; app=QCoreApplication([]); print map(unicode,app.libraryPaths())"))
     if not qt4_plugin_dirs:
-        print "E: Cannot find PyQt4 plugin directories"
+        print "E: Cannot find Qt4 plugin directories"
         return ""
     for d in qt4_plugin_dirs:
         if os.path.isdir(d):
             return str(d)  # must be 8-bit chars for one-file builds
-    print "E: Cannot find existing PyQt4 plugin directory"
+    print "E: Cannot find existing Qt4 plugin directory"
     return ""
-def qt4_phonon_plugins_dir():
+def qt4_phonon_plugins_dir(pyside=False):
     import os
-    qt4_plugin_dirs = eval(exec_statement("from PyQt4.QtGui import QApplication; app=QApplication([]); app.setApplicationName('pyinstaller'); from PyQt4.phonon import Phonon; v=Phonon.VideoPlayer(Phonon.VideoCategory); print map(unicode,app.libraryPaths())"))
+    if pyside:
+        qt4_plugin_dirs = eval(exec_statement("from PySide.QtGui import QApplication; app=QApplication([]); app.setApplicationName('pyinstaller'); from PyQt4.phonon import Phonon; v=Phonon.VideoPlayer(Phonon.VideoCategory); print map(unicode,app.libraryPaths())"))
+    else:
+        qt4_plugin_dirs = eval(exec_statement("from PyQt4.QtGui import QApplication; app=QApplication([]); app.setApplicationName('pyinstaller'); from PyQt4.phonon import Phonon; v=Phonon.VideoPlayer(Phonon.VideoCategory); print map(unicode,app.libraryPaths())"))
     if not qt4_plugin_dirs:
-        print "E: Cannot find PyQt4 phonon plugin directories"
+        print "E: Cannot find Qt4 phonon plugin directories"
         return ""
     for d in qt4_plugin_dirs:
         if os.path.isdir(d):
             return str(d)  # must be 8-bit chars for one-file builds
-    print "E: Cannot find existing PyQt4 phonon plugin directory"
+    print "E: Cannot find existing Qt4 phonon plugin directory"
     return ""
 def babel_localedata_dir():
     return exec_statement("import babel.localedata; print babel.localedata._dirname")
